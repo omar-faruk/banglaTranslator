@@ -28,7 +28,7 @@ def eng2bn(word):
 		meaning = sql.fetchone()[1]
 		return meaning
 	except TypeError:
-		return "NF"
+		return "NotFound"
 class TranslatorGUI:
 		
 	def __init__(self):
@@ -43,14 +43,14 @@ class TranslatorGUI:
 		word=self.inputBox.get_text();
 		lang='bn'
 		meaning=eng2bn(word)
-		try:
-			if(meaning=="NF"):
+		if(meaning=="NotFound"):
+			try:
 				meaning=translator.translate(word,lang)
-				if(meaning!="NF"):
+				if(meaning!="NotFound"):
 					insertToDB(word,meaning)
-		except:
-			if(meaning=="NF"):
-				meaning="অর্থ খুঁজে পাওয়া যায়নি , ইন্টারনেট  সংযোগ  নিশ্চিত করুন "
+			except:
+				if(meaning=="NotFound"):
+					meaning="অর্থ খুঁজে পাওয়া যায়নি , ইন্টারনেট  সংযোগ  নিশ্চিত করুন "
 		self.showBox.set_text(meaning)
 		
 	def mnu_quite_app(self, window):
