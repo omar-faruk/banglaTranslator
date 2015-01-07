@@ -1,9 +1,34 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 from gi.repository import Gtk, GObject
-import serial
+import serial 
 import time
 import goslate
+import sqlite3
 translator=goslate.Goslate()
 
+def insertToDB(word,meaning):
+	connection = sqlite3.connect('dict.db')
+	sql = connection.cursor()
+	sql.execute("INSERT INTO english(EN) VALUES(?)",(word,))
+	sql.execute("INSERT INTO bangla(BN) VALUES(?)",(meaning,))
+	connection.commit()
+	sql.close()
+	return
+
+def eng2bn(word):
+	connection = sqlite3.connect('dict.db')
+	sql = connection.cursor()
+	sql.execute('SELECT * FROM english WHERE EN=?', (word.upper(),))
+	try:
+		bn_index = sql.fetchone()[0]
+		sql.execute('SELECT * FROM bangla WHERE index=?', (bn_index,))
+		sql.close()
+		meaning = sql.fetchone()[1]
+		return meaning
+	except TypeError:
+		return "NF"
 class TranslatorGUI:
 		
 	def __init__(self):
@@ -17,8 +42,16 @@ class TranslatorGUI:
 	def on_input_box_activate(self,inputBox):
 		word=self.inputBox.get_text();
 		lang='bn'
-		ans=translator.translate(word,lang)
-		self.showBox.set_text(ans)
+		meaning=eng2bn(word)
+		try:
+			if(meaning=="NF"):
+				meaning=translator.translate(word,lang)
+				if(meaning!="NF"):
+					insertToDB(word,meaning)
+		except:
+			if(meaning=="NF"):
+				meaning="অর্থ খুঁজে পাওয়া যায়নি , ইন্টারনেট  সংযোগ  নিশ্চিত করুন "
+		self.showBox.set_text(meaning)
 		
 	def mnu_quite_app(self, window):
 		Gtk.main_quit()

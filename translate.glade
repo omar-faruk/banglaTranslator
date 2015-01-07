@@ -21,13 +21,17 @@
               <object class="GtkSearchEntry" id="input_box">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="margin_left">25</property>
+                <property name="margin_right">24</property>
+                <property name="margin_top">6</property>
                 <property name="primary_icon_name">edit-find-symbolic</property>
                 <property name="primary_icon_activatable">False</property>
                 <property name="primary_icon_sensitive">False</property>
+                <property name="input_purpose">alpha</property>
                 <signal name="activate" handler="on_input_box_activate" swapped="no"/>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
@@ -39,6 +43,7 @@
                 <property name="margin_right">4</property>
                 <property name="margin_top">27</property>
                 <property name="margin_bottom">1</property>
+                <property name="justify">center</property>
                 <property name="selectable">True</property>
                 <property name="lines">0</property>
                 <attributes>
