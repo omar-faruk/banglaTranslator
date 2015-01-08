@@ -7,28 +7,24 @@ import time
 import goslate
 import sqlite3
 translator=goslate.Goslate()
-
+connection = sqlite3.connect('dict.db')
+sql = connection.cursor()
 def insertToDB(word,meaning):
-	connection = sqlite3.connect('dict.db')
-	sql = connection.cursor()
 	sql.execute("INSERT INTO english(EN) VALUES(?)",(word,))
 	sql.execute("INSERT INTO bangla(BN) VALUES(?)",(meaning,))
 	connection.commit()
-	sql.close()
 	return
 
 def eng2bn(word):
-	connection = sqlite3.connect('dict.db')
-	sql = connection.cursor()
-	sql.execute('SELECT * FROM english WHERE EN=?', (word.upper(),))
+	sql.execute('SELECT * FROM english WHERE EN=?', (word,))
 	try:
-		bn_index = sql.fetchone()[0]
-		sql.execute('SELECT * FROM bangla WHERE index=?', (bn_index,))
-		sql.close()
-		meaning = sql.fetchone()[1]
+		sn=int(sql.fetchone()[0])
+		sql.execute("SELECT * FROM bangla WHERE SN=?", (sn,))
+		meaning=sql.fetchone()[1]
 		return meaning
 	except TypeError:
 		return "NotFound"
+
 class TranslatorGUI:
 		
 	def __init__(self):
@@ -41,12 +37,13 @@ class TranslatorGUI:
 
 	def on_input_box_activate(self,inputBox):
 		word=self.inputBox.get_text();
+		word=word.lower()
 		lang='bn'
 		meaning=eng2bn(word)
 		if(meaning=="NotFound"):
 			try:
 				meaning=translator.translate(word,lang)
-				if(meaning!="NotFound"):
+				if(meaning!="NotFound" and meaning!=word):
 					insertToDB(word,meaning)
 			except:
 				if(meaning=="NotFound"):
