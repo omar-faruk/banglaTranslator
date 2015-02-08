@@ -39,6 +39,7 @@ class TranslatorGUI:
 		word=self.inputBox.get_text();
 		word=word.lower()
 		lang='bn'
+		inputBox.set_text("")
 		meaning=eng2bn(word)
 		if(meaning=="NotFound"):
 			try:
