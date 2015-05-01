@@ -3,7 +3,7 @@ banglaTranslator
 
 Light Weight English to Bangla Translator using  "goSlate" (A Free Google Translate API...)
 
-Usage(needs gtk 3.10 or later version):
+Usage(needs gtk 3.8 or later version):
 
 After Cloning repository right click on "generateDesktopFile.sh"
 
